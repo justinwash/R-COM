@@ -2,6 +2,7 @@
 
 Tactics in a terminal
 
+```
 ╔═╡ R-COM ╞═════════════════════════════════════════╦═╡ Status ╞══════╗
 ║                                                   ║ Name:           ║
 ║    @       @                                 ▒    ║    Heihachi     ║
@@ -21,3 +22,4 @@ Tactics in a terminal
 ╠═══╡ Commands ╞════════════════════════════════════╩═════════════════╣
 ║  Move    Fire    Use Item    Hunker Down    Reload    Swap Weapon   ║
 ╚═════════════════════════════════════════════════════════════════════╝
+```
