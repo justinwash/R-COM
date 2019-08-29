@@ -1,6 +1,8 @@
 extern crate crossterm;
 use std::io::{stdout, Write};
 
+use utilities::Position;
+
 use self::crossterm::{ 
   execute, 
   AsyncReader, 
@@ -18,7 +20,7 @@ pub fn get_cursor_origin(cursor: TerminalCursor) -> (u16, u16) {
     return origin;
 }
 
-pub fn update_cursor(input: &mut AsyncReader, mut cursor: TerminalCursor, origin: (u16, u16)) {
+pub fn update_cursor(input: &mut AsyncReader, mut cursor: TerminalCursor, origin: &(u16, u16)) -> Position {
     let pressed_key = input.next();
 
     if let Some(InputEvent::Keyboard(key)) = pressed_key {
@@ -31,4 +33,14 @@ pub fn update_cursor(input: &mut AsyncReader, mut cursor: TerminalCursor, origin
             _ => { },
         };
     }
+
+    return Position {
+      x: cursor.pos().0,
+      y: cursor.pos().1 - origin.1,
+    }
+}
+
+pub fn cursor_goto(mut cursor: TerminalCursor, origin: &(u16, u16), destination: Position) {
+  cursor.move_up(cursor.pos().0 - origin.0);
+  cursor.move_left(cursor.pos().1 - origin.1);
 }

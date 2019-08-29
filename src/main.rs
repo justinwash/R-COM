@@ -4,6 +4,7 @@ extern crate rand;
 use self::crossterm::{ Crossterm, RawScreen };
 
 mod soldier;
+mod squad;
 mod utilities;
 mod state;
 mod ui;
@@ -11,9 +12,10 @@ mod cursor;
 mod map;
 
 use soldier::{ Soldier };
+use squad::{ Squad };
 use utilities::{ Position };
 use state::{ Mode, Select };
-use ui::{ init_ui };
+use ui::{ init_ui, draw_details, clear_details };
 use cursor::{ get_cursor_origin, update_cursor };
 use map::{ init_map };
 
@@ -29,23 +31,22 @@ fn main() {
 
     let mut stdin = crossterm.input().read_async();
 
-    let squad = vec![
-        Soldier::new(String::from("Jinpachi"), Position { x: 2, y: 2 }),
-        Soldier::new(String::from("Heihachi"), Position { x: 2, y: 3 }),
-        Soldier::new(String::from("Kazumi"), Position { x: 2, y: 4 }),
-        Soldier::new(String::from("Kazuya"), Position { x: 3, y: 2 }),
-        Soldier::new(String::from("Jun"), Position { x: 3, y: 3 }),
-        Soldier::new(String::from("Jin"), Position { x: 3, y: 4 }),
-    ];
+    let squad = Squad::new();
+    squad.draw();
+
+    let mut highlighted_obj_name = "";
 
     loop {
-        match game_state {
-            Mode::Deploy => {
-                update_cursor(&mut stdin, crossterm.cursor(), origin);
+        let cursor_pos = update_cursor(&mut stdin, crossterm.cursor(), &origin);
 
-            }
+        match game_state {
             Mode::Select(Select::None) => {
-                update_cursor(&mut stdin, crossterm.cursor(), origin);
+                for soldier in &squad.members {
+                    if cursor_pos == soldier.pos && soldier.name != highlighted_obj_name {
+                        highlighted_obj_name = &soldier.name;
+                        draw_details(soldier);
+                    }
+                }
             }
             _ => { }
         }
